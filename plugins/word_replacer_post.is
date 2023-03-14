@@ -1,0 +1,64 @@
+/// @ 0.12.4
+### {
+  name: "Word Replacer (post)"
+  version: "0.1.0"
+  author: "@salano_ym"
+  description: "ノート投稿時に特定の単語を置換します"
+  config: {
+    repls: {
+      type: 'string'
+      label: '置換リスト'
+      description: '例: ["old", "new"], ["旧", "新"] ...'
+    }
+  }
+}
+
+@validate(repls) {
+  if Core:type(repls) != 'arr' {
+    return [[] false]
+  }
+  let new_repls = []
+  var ok = true
+  each let r repls {
+    if Core:type(r) != 'arr' {
+      ok = false
+      continue
+    } elif r.len != 2 {
+      ok = false
+      continue
+    } elif Core:type(r[0]) != 'str' || Core:type(r[1]) != 'str' {
+      ok = false
+      continue
+    }
+    new_repls.push(r)
+  }
+  return [new_repls ok]
+}
+
+
+@replace(text repls) {
+  if Core:type(text) != 'str' {
+    return text
+  }
+  each let r repls {
+    text = text.replace(r[0] r[1])
+  }
+  return text
+}
+
+let a = validate(Json:parse(`[{Plugin:config.repls}]`))
+let repls = a[0]
+let ok = a[1]
+
+@f(note) {
+  note.text = replace(note.text repls)
+  note.cw = replace(note.cw repls)
+  note
+}
+
+if !ok {
+  // Json:parseが例外落ちしたら機能しません
+  Mk:dialog('Word Replacer(post)' '置換リストの一部がうまく読み込めませんでした' 'error')
+}
+
+Plugin:register_note_post_interruptor(f)

@@ -1,0 +1,52 @@
+///@ 0.12.4
+### {
+  name: "村上さんパラダイス"
+  version: "1.1.0"
+  author: "salano_ym"
+  description: "TL全員が指定ユーザーに化けます(リプ先等も変更されるので迷惑にならないよう注意！！)"
+  config: {
+    acct: {
+      type: 'string'
+      label: '@username@host'
+      description: 'デフォルト: @AureoleArk@misskey.io'
+      default: '@AureoleArk@misskey.io'
+    }
+  }
+}
+
+let sp = Plugin:config.acct.split('@')
+
+let user = match sp.len {
+  2 => {username: sp[1], host: null}
+  3 => {username: sp[1], host: sp[2]}
+  * => {username: 'AureoleArk', host: 'misskey.io'}
+}
+let target_users = Mk:api(
+  'users/search-by-username-and-host'
+  {
+    username: user.username
+    host: user.host
+    limit: 1
+    detail: true
+  }
+)
+
+if target_users.len == 0 {
+  Mk:dialog('村上さんパラダイス' `cannot get user. username: {user.username}, host: {user.host}` 'error')
+} else {
+  let target_user = target_users[0]
+  Plugin:register_note_view_interruptor(@(note){
+    note.userId = target_user.id
+    note.user = target_user
+    if note.reply != null {
+      note.reply.userId = target_user.id
+      note.reply.user = target_user
+    }
+
+    if note.renote != null {
+      note.renote.userId = target_user.id
+      note.renote.user = target_user
+    }
+    return note
+  })
+}

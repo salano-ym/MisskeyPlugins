@@ -1,0 +1,17 @@
+///@ 0.12.4
+### {
+  name: "ローカル投稿(のマーク)を削除"
+  version: "1.0.0"
+  author: "@salano_ym"
+  description: "ノートの右上に表示されるローカル投稿のマークを消します"
+}
+Plugin:register_note_view_interruptor(@(note){
+  note.localOnly = false
+  if note.renote != null {
+    note.renote.localOnly = false
+  }
+  if note.reply != null {
+    note.reply.localOnly = false
+  }
+  return note
+})

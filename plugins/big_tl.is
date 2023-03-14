@@ -1,0 +1,32 @@
+/// @ 0.12.4
+### {
+  name: "でかいTL"
+  version: "0.1.0"
+  author: "@salano_ym"
+  description: "タイムラインがでかくなります。CWも剥がします。"
+}
+
+@yabai(note) {
+  note.text = if note.text != null && note.cw != null {
+    `$[x4 {note.cw}{note.text}]`
+  } elif note.text != null {
+    `$[x4 {note.text}]`
+  } elif note.cw != null {
+    `$[x4 {note.cw}]`
+  } else {
+    null
+  }
+  note.cw = null
+  note
+}
+
+Plugin:register_note_view_interruptor(@(note){
+  yabai(note)
+  if note.renote != null {
+    yabai(note.renote)
+  }
+  if note.reply != null {
+    yabai(note.reply)
+  }
+  note
+})

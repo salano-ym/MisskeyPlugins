@@ -1,0 +1,37 @@
+///@ 0.12.4
+### {
+  name: "TLが全員公式&開発者&寄付者になる"
+  version: "1.0.0"
+  author: "salano_ym"
+  description: "全員のノートに公式&開発者&寄付者マークを表示する"
+}
+
+let roles = [
+  {
+    name: 'Official',
+    iconUrl: 'https://s3.arkjp.net/misskey/14ea4e6d-fe6a-4b2d-bc0f-1cbde3d332a8.png',
+  },
+  {
+    name: 'Patreon Supporter',
+    iconUrl: 'https://s3.arkjp.net/misskey/6686b09c-2418-4c08-8a80-5b3adee917af.png',
+  },
+  {
+    name: 'Misskey Developer',
+    iconUrl: 'https://s3.arkjp.net/misskey/cd5fe640-41a3-4006-9559-ef3a35eefc3e.png',
+  },
+  {
+    name: 'Misskey Supporter',
+    iconUrl: 'https://s3.arkjp.net/misskey/dab4e89c-4ed1-4c06-918d-441db61dabaf.png',
+  },
+]
+
+Plugin:register_note_view_interruptor(@(note){
+  note.user.badgeRoles = roles
+  if note.reply != null {
+    note.reply.user.badgeRoles = roles
+  }
+  if note.renote != null {
+    note.renote.user.badgeRoles = roles
+  }
+  return note
+})
