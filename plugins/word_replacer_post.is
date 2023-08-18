@@ -1,7 +1,8 @@
-/// @ 0.12.4
+/// @ 0.13.3
+/// misskey側のバグのため実際は0.15.0
 ### {
-  name: "Word Replacer (post)"
-  version: "0.1.0"
+  name: "Word Replacer(Post)"
+  version: "0.1.1"
   author: "@salano_ym"
   description: "ノート投稿時に特定の単語を置換します"
   config: {
@@ -20,17 +21,11 @@
   let new_repls = []
   var ok = true
   each let r repls {
-    if Core:type(r) != 'arr' {
+    if Core:type(r) != 'arr' || r.len != 2 || Core:type(r[0]) != 'str' || Core:type(r[1]) != 'str' {
       ok = false
-      continue
-    } elif r.len != 2 {
-      ok = false
-      continue
-    } elif Core:type(r[0]) != 'str' || Core:type(r[1]) != 'str' {
-      ok = false
-      continue
+    } else {
+      new_repls.push(r)
     }
-    new_repls.push(r)
   }
   return [new_repls ok]
 }
@@ -46,9 +41,14 @@
   return text
 }
 
-let a = validate(Json:parse(`[{Plugin:config.repls}]`))
+let json_text = `[{Plugin:config.repls}]`
+let a = if Json:parsable(json_text) {
+  validate(Json:parse(json_text))
+} else {
+  [[] false]
+}
 let repls = a[0]
-let ok = a[1]
+let is_valid_json = a[1]
 
 @f(note) {
   note.text = replace(note.text repls)
@@ -56,9 +56,8 @@ let ok = a[1]
   note
 }
 
-if !ok {
-  // Json:parseが例外落ちしたら機能しません
-  Mk:dialog('Word Replacer(post)' '置換リストの一部がうまく読み込めませんでした' 'error')
+if is_valid_json {
+  Plugin:register_note_post_interruptor(f)
+} else {
+  Mk:dialog('Word Replacer(Post)' '置換リストが不正です' 'error')
 }
-
-Plugin:register_note_post_interruptor(f)
