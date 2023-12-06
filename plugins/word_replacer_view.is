@@ -1,15 +1,15 @@
-/// @ 0.13.3
-/// misskey側のバグのため実際は0.15.0
+/// @ 0.15.0
 ### {
   name: "Word Replacer(View)"
-  version: "0.1.2"
-  author: "@salano_ym"
+  version: "0.1.3"
+  author: "@salano_ym@misskey.io"
   description: "ノート閲覧時に特定の単語を置換して表示します"
   config: {
     repls: {
       type: 'string'
       label: '置換リスト'
       description: '例: ["old", "new"], ["旧", "新"] ...'
+      default: ''
     }
   }
 }
@@ -49,8 +49,6 @@ let a = if Json:parsable(json_text) {
 }
 let repls = a[0]
 let is_valid_json = a[1]
-
-
 
 @f(note) {
   note.text = replace(note.text repls)
