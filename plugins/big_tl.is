@@ -2,7 +2,7 @@
 ### {
   name: "でかいTL"
   version: "0.1.0"
-  author: "@salano_ym"
+  author: "@salano_ym@misskey.io"
   description: "タイムラインがでかくなります。CWも剥がします。"
 }
 
