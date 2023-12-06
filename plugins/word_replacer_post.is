@@ -2,7 +2,7 @@
 ### {
   name: "Word Replacer(Post)"
   version: "0.1.2"
-  author: "@salano_ym"
+  author: "@salano_ym@misskey.io"
   description: "ノート投稿時に特定の単語を置換します"
   config: {
     repls: {
