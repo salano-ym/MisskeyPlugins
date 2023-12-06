@@ -1,8 +1,7 @@
-/// @ 0.13.3
-/// misskey側のバグのため実際は0.15.0
+/// @ 0.15.0
 ### {
   name: "Word Replacer(Post)"
-  version: "0.1.1"
+  version: "0.1.2"
   author: "@salano_ym"
   description: "ノート投稿時に特定の単語を置換します"
   config: {
@@ -10,6 +9,7 @@
       type: 'string'
       label: '置換リスト'
       description: '例: ["old", "new"], ["旧", "新"] ...'
+      default: ''
     }
   }
 }
@@ -50,10 +50,24 @@ let a = if Json:parsable(json_text) {
 let repls = a[0]
 let is_valid_json = a[1]
 
+@remove_null_property(object) {
+  let new_obj = {}
+  each let kv Obj:kvs(object) {
+    let v = if Core:type(kv[1]) == 'obj' {
+      remove_null_property(kv[1])
+    }
+    else { kv[1] }
+    if Core:type(v) != 'null' {
+      Obj:set(new_obj kv[0] v)
+    }
+  }
+  return new_obj
+}
+
 @f(note) {
   note.text = replace(note.text repls)
   note.cw = replace(note.cw repls)
-  note
+  remove_null_property(note)
 }
 
 if is_valid_json {
