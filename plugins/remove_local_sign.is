@@ -2,7 +2,7 @@
 ### {
   name: "ローカル投稿(のマーク)を削除"
   version: "1.0.0"
-  author: "@salano_ym"
+  author: "@salano_ym@misskey.io"
   description: "ノートの右上に表示されるローカル投稿のマークを消します"
 }
 Plugin:register_note_view_interruptor(@(note){
