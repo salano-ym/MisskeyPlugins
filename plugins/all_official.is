@@ -2,7 +2,7 @@
 ### {
   name: "TLが全員公式&開発者&寄付者になる"
   version: "1.0.0"
-  author: "salano_ym"
+  author: "@salano_ym@misskey.io"
   description: "全員のノートに公式&開発者&寄付者マークを表示する"
 }
 
